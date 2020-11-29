@@ -1,9 +1,25 @@
+@font-face {
+    font-family: "SFProDisplay-Regular";
+    src: local("SFProDisplay-Regular"),
+    url('../fonts/SFProDisplay-Regular.woff') format("woff"),
+    url('../fonts/SFProDisplay-Regular.woff2') format("woff2");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "SFProDisplay-Semibold";
+    src: local("SFProDisplay-Semibold"),
+    url('../fonts/SFProDisplay-Semibold.woff') format("woff"),
+    url('../fonts/SFProDisplay-Semibold.woff2') format("woff2");
+    font-weight: bold;
+}
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: sans-serif;
+    font-family: "SFProDisplay-Regular", sans-serif;
     background: #F5F5F5;
 }
 
@@ -126,6 +142,7 @@ body {
 }
 
 .post-title {
+    font-family: "SFProDisplay-Semibold", sans-serif;
     margin-top: 0;
     margin-bottom: 19px;
     font-size: 16px;
@@ -215,6 +232,7 @@ body {
 .sidebar {
     width: 31%;
 }
+
 .user {
     background-color: #FAFAFA;
     border: 1px solid #E8E8E8;
@@ -223,20 +241,25 @@ body {
     align-items: center;
     justify-content: space-between;
 }
+
 .user-info {
     display: flex;
     align-items: center;
     text-decoration: none;
 }
+
 .user-avatar {
     border-radius: 50%;
     margin-right: 17px;
 }
+
 .user-name {
+    font-family: "SFProDisplay-Semibold", sans-serif;
     font-size: 16px;
     line-height: 24px;
     color: #595959;
 }
+
 .icon-exit {
     fill: #000000;
 }
@@ -244,6 +267,7 @@ body {
 .sidebar-nav {
     background-color: #FFFFFF;
 }
+
 .sidebar-menu {
     margin: 0;
     border: 1px solid #e8e8e8;
@@ -251,6 +275,7 @@ body {
     list-style: none;
     padding: 0;
 }
+
 .sidebar-menu-link {
     text-decoration: none;
     font-size: 14px;
@@ -261,14 +286,17 @@ body {
     width: 100%;
     background-color: #FFFFFF;
 }
+
 .sidebar-menu-link:hover {
     background-color: #FFFBE6;
 
 }
+
 .sidebar-menu-link.active {
     background-color: #FFFBE6;
     border-right: 3px solid #FAAD14;;
 }
+
 .button {
     background: #FAAD14;
     border-radius: 4px;
@@ -279,6 +307,7 @@ body {
     padding: 13px;
 
 }
+
 .button-new-post {
     display: flex;
     align-items: center;
@@ -288,42 +317,52 @@ body {
     margin-top: 20px;
 
 }
+
 .icon-fire {
     fill: #FFFFFF;
     margin-right: 10px;
 }
+
 .card {
     background: #FFFFFF;
     border: 1px solid #E8E8E8;
     margin-top: 20px;
 }
+
 .card-header {
     background: #FFFFFF;
     border-bottom: 1px solid #E8E8E8;
     padding: 23px 25px;
 }
+
 .card-title {
+    font-family: "SFProDisplay-Semibold", sans-serif;
     margin: 0;
     font-size: 16px;
     line-height: 24px;
     color: #595959;
 }
+
 .card-body {
     padding: 22px 40px 20px 25px;
 }
+
 .card-body-title {
+    font-family: "SFProDisplay-Semibold", sans-serif;
     margin: 0 0 10px;
     text-decoration: none;
     font-size: 16px;
     line-height: 24px;
     color: #D48806;
 }
+
 .card-text {
     font-size: 14px;
     line-height: 22px;
     color: #262626;
     margin: 10px 0;
 }
+
 .promo {
     display: block;
     background: #FFFFFF url('../img/reklama.jpg') no-repeat center center / cover;
@@ -333,6 +372,7 @@ body {
     margin-top: 20px;
     position: relative;
 }
+
 .promo::before {
     content: 'Реклама';
     position: absolute;
