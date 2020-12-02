@@ -48,6 +48,11 @@ const setUsers = {
 
     },
     signUp(email, password, handler) {
+
+        if (!email.trim() || !password.trim()) {
+            alert("Введите данные")
+            return
+        }
         if (!this.getUser(email)) {
             const user = {email, password, displayName: email}
             listUsers.push(user)
@@ -88,6 +93,7 @@ loginForm.addEventListener('submit', (event) => {
     const passwordValue = passwordInput.value
 
     setUsers.logIn(emailValue, passwordValue, toggleAuthDom)
+    loginForm.reset()
 
 })
 
@@ -98,7 +104,7 @@ loginSignup.addEventListener('click', (event) => {
     const passwordValue = passwordInput.value
 
     setUsers.signUp(emailValue, passwordValue, toggleAuthDom)
-
+    loginForm.reset()
 })
 
 toggleAuthDom()

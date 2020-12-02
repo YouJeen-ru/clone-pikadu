@@ -306,6 +306,9 @@ body {
     background-color: #FAFAFA;
     border: 1px solid #E8E8E8;
     padding: 15px 25px;
+
+}
+.user-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -315,6 +318,7 @@ body {
     display: flex;
     align-items: center;
     text-decoration: none;
+    margin-right: auto;
 }
 
 .user-avatar {
@@ -327,6 +331,44 @@ body {
     font-size: 16px;
     line-height: 24px;
     color: #595959;
+}
+.edit {
+    margin-right: 10px;
+}
+.edit-container {
+    display: none;
+}
+.edit-container.visible {
+    display: block;
+}
+.edit-btn {
+    background-color: #FA8C16;
+    border: none;
+    border-radius: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    line-height: 24px;
+    font-size: 12px;
+    font-family: "SFProDisplay-Semibold", sans-serif;
+    padding: 5px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.edit-label {
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.edit-input {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    padding: 5px 10px;
+}
+
+.icon-edit {
+    width: 20px;
+    height: 20px;
 }
 
 .icon-exit {
