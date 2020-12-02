@@ -335,6 +335,12 @@ body {
 .edit {
     margin-right: 10px;
 }
+.edit-title {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-family: "SFProDisplay-Semibold", sans-serif;
+}
 .edit-container {
     display: none;
 }
