@@ -23,6 +23,10 @@ const userAvatarElem = document.querySelector('.user-avatar')
 
 const postsWrapper = document.querySelector('.posts')
 
+const buttonNewPost = document.querySelector('.button-new-post')
+
+const addPostElem = document.querySelector('.add-post')
+
 
 
 const listUsers = [
@@ -51,7 +55,9 @@ const setUsers = {
         const user = this.getUser(email)
         if (user && user.password === password) {
             this.authorizedUser(user)
-            handler()
+            if (handler) {
+                handler()
+            }
         } else {
             alert('Пользователь с такими данными не найден')
         }
@@ -59,7 +65,9 @@ const setUsers = {
     },
     logOut(handler) {
         this.user = null
-        handler()
+        if (handler) {
+            handler()
+        }
     },
     signUp(email, password, handler) {
         if (!regExpValidEmail.test(email)) {
@@ -74,7 +82,9 @@ const setUsers = {
             const user = {email, password, displayName: email.substring(0, email.indexOf('@'))}
             listUsers.push(user)
             this.authorizedUser(user)
-            handler()
+            if (handler) {
+                handler()
+            }
         } else {
             alert('Пользователь с таким email уже зарегистрирован')
         }
@@ -87,7 +97,9 @@ const setUsers = {
         if (userPhoto){
             this.user.photo = userPhoto
         }
-        handler()
+        if (handler) {
+            handler()
+        }
 
     },
 
@@ -107,7 +119,7 @@ const setPosts = {
             title: 'Из жизни фельдшера',
             text: 'Дело было зимой ночью в Москве. Рассказал знакомый - студент медвуза, подрабатывал на скорой. Вызвала женщина, сильно живот болит. Приехали, заходят, женщина испугана - и тут появляется муж с бешенным взглядом и не туристическим топором в руках - жену тронете, нахер всех перебю. Из квартиры не выпускает, к телефону тоже - знает, что ментов вызовут. У знакомого нет других вариантов, как идти с захватчиком на переговоры. И ему удается ему втолковать, что жену надо везти в больницу, нужно её нести на носилках, а у подъезда чистый лёд, можно подскользнуться, она выпадет, еще что-то сломает.. И муж с топором пошел вниз отбивать лёд.',
             tags: ['Универ', 'Интересное', 'Медицина', 'Мое', 'Фельдшер'],
-            author: 'maks@mail.ru',
+            author: {displayName: 'maks', photo: 'https://static.ekburg.tv/2019-09-15/1306fa80-d7f3-11e9-aa41-1be24cec0e2d/1304b090-d7f3-11e9-aa41-1be24cec0e2d.jpg'},
             date: '11.11.2020, 20:54:00',
             like: 15,
             comments: 20,
@@ -116,13 +128,31 @@ const setPosts = {
             title: 'Заголовок поста',
             text: '1. В универе надо было самим искать себе практику по переводческой работе и писать отчёт по ней. Моя одногруппница и подруга Маша отработала в крутой компании и общалась с поставщиками со всего мира.После проверки ее работы, молодая преподаватель «усомнилась» в истинности этой работы и запросила контакты руководителя',
             tags: ['Универ', 'Интересное', 'Мое', 'Фельдшер'],
-            author: 'kate@mail.ru',
+            author: {displayName: 'kate', photo:'https://klike.net/uploads/posts/2019-06/1561009159_3.jpg'},
             date: '10.11.2020, 20:54:00',
             like: 45,
             comments: 12,
         },
 
     ],
+    addPost(title, text, tags, handler) {
+        this.allPosts.unshift({
+            title,
+            text,
+            tags: tags.split(',').map(item => item.trim()),
+            author: {
+                displayName: setUsers.user.displayName,
+                photo: setUsers.user.photo
+            },
+            date: new Date().toLocaleString(),
+            like: 0,
+            comments: 0,
+        })
+        if (handler) {
+            handler()
+        }
+
+    }
 
 }
 
@@ -133,11 +163,22 @@ const toggleAuthDom = () => {
         userElem.style.display = '';
         userNameElem.textContent = user.displayName;
         userAvatarElem.src = user.photo || userAvatarElem.src
+        buttonNewPost.classList.add('visible')
     } else {
         loginElem.style.display = '';
         userElem.style.display = 'none';
+        buttonNewPost.classList.remove('visible')
+        addPostElem.classList.remove('visible')
+        postsWrapper.classList.add('visible')
+
     }
 }
+
+const showAddPost = () => {
+    addPostElem.classList.add('visible')
+    postsWrapper.classList.remove('visible')
+}
+
 
 
 
@@ -146,7 +187,7 @@ const showAllPosts = () => {
 
     let postsHTML = ''
 
-    setPosts.allPosts.forEach(( { title, text, date  } ) => {
+    setPosts.allPosts.forEach(( { title, text, date,tags, like, comments, author  } ) => {
 
         postsHTML += `
         
@@ -156,11 +197,8 @@ const showAllPosts = () => {
                 <p class="post-text">${text}</p>
                 
                 <div class="tags">
-                    <a href="#" class="tag">#Универ</a>
-                    <a href="#" class="tag">#Клиент</a>
-                    <a href="#" class="tag">#Актуальное</a>
-                    <a href="#" class="tag">#Мое</a>
-                    <a href="#" class="tag">#Жадность</a>
+                ${tags.map(tag =>  `<a href="#" class="tag">#${tag}</a>` )}
+                   
                 </div>
             </div>
             <div class="post-footer">
@@ -169,13 +207,13 @@ const showAllPosts = () => {
                         <svg width="19" height="20" class="icon icon-like">
                             <use xlink:href="img/icons.svg#likes"></use>
                         </svg>
-                        <span class="likes-counter">51</span>
+                        <span class="likes-counter">${like}</span>
                     </button>
                     <button class="post-button comments">
                         <svg width="21" height="21" class="icon icon-comment">
                             <use xlink:href="img/icons.svg#comments"></use>
                         </svg>
-                        <span class="comments-counter">283</span>
+                        <span class="comments-counter">${comments}</span>
 
                     </button>
                     <button class="post-button save icon-save">
@@ -191,10 +229,10 @@ const showAllPosts = () => {
                 </div>
                 <div class="post-author">
                     <div class="author-about">
-                        <a href="" class="author-username">yana86</a>
+                        <a href="" class="author-username">${author.displayName}</a>
                         <span class="post-time">${date}</span>
                     </div>
-                    <a href="#" class="author-link"><img src="img/avatar2.jpg" alt="ava-2" class="author-avatar"></a>
+                    <a href="#" class="author-link"><img src=${author.photo || "img/avatar2.jpg"} alt="ava-2" class="author-avatar"></a>
                 </div>
             </div>
         </section>
@@ -202,7 +240,12 @@ const showAllPosts = () => {
     })
 
     postsWrapper.innerHTML = postsHTML
+
+    addPostElem.classList.remove('visible')
+    postsWrapper.classList.add('visible')
 }
+
+
 const init = () => {
 
     loginForm.addEventListener('submit', (event) => {
@@ -247,6 +290,29 @@ const init = () => {
     menuToggle.addEventListener('click', function (event) {
         event.preventDefault()
         menu.classList.toggle('visible')
+    })
+
+    buttonNewPost.addEventListener('click', event => {
+        event.preventDefault()
+        showAddPost()
+    })
+
+    addPostElem.addEventListener('submit', event => {
+        event.preventDefault()
+        const { title, text, tags } = addPostElem.elements
+         if (title.value.length < 6) {
+             alert('Слишком короткий заголовок');
+             return
+         }
+        if (text.value.length < 50) {
+            alert('Слишком короткий пост');
+            return
+        }
+
+        setPosts.addPost(title.value, text.value, tags.value, showAllPosts)
+
+        addPostElem.classList.remove('visible')
+        addPostElem.reset()
     })
 
     showAllPosts()
