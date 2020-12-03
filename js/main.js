@@ -1,10 +1,7 @@
 let menuToggle = document.querySelector('#menu-toggle')
 let menu = document.querySelector('.sidebar')
 
-menuToggle.addEventListener('click', function (event) {
-    event.preventDefault()
-    menu.classList.toggle('visible')
-})
+
 
 const regExpValidEmail = /^\w+@\w+\.\w{2,}$/;
 
@@ -104,6 +101,31 @@ const setUsers = {
     }
 }
 
+const setPosts = {
+    allPosts: [
+        {
+            title: 'Из жизни фельдшера',
+            text: 'Дело было зимой ночью в Москве. Рассказал знакомый - студент медвуза, подрабатывал на скорой. Вызвала женщина, сильно живот болит. Приехали, заходят, женщина испугана - и тут появляется муж с бешенным взглядом и не туристическим топором в руках - жену тронете, нахер всех перебю. Из квартиры не выпускает, к телефону тоже - знает, что ментов вызовут. У знакомого нет других вариантов, как идти с захватчиком на переговоры. И ему удается ему втолковать, что жену надо везти в больницу, нужно её нести на носилках, а у подъезда чистый лёд, можно подскользнуться, она выпадет, еще что-то сломает.. И муж с топором пошел вниз отбивать лёд.',
+            tags: ['Универ', 'Интересное', 'Медицина', 'Мое', 'Фельдшер'],
+            author: 'maks@mail.ru',
+            date: '11.11.2020, 20:54:00',
+            like: 15,
+            comments: 20,
+        },
+        {
+            title: 'Заголовок поста',
+            text: '1. В универе надо было самим искать себе практику по переводческой работе и писать отчёт по ней. Моя одногруппница и подруга Маша отработала в крутой компании и общалась с поставщиками со всего мира.После проверки ее работы, молодая преподаватель «усомнилась» в истинности этой работы и запросила контакты руководителя',
+            tags: ['Универ', 'Интересное', 'Мое', 'Фельдшер'],
+            author: 'kate@mail.ru',
+            date: '10.11.2020, 20:54:00',
+            like: 45,
+            comments: 12,
+        },
+
+    ],
+
+}
+
 const toggleAuthDom = () => {
     const user = setUsers.user
     if (user) {
@@ -121,7 +143,65 @@ const toggleAuthDom = () => {
 
 
 const showAllPosts = () => {
-    postsWrapper.innerHTML = 'Тут могла быть ваша реклама '
+
+    let postsHTML = ''
+
+    setPosts.allPosts.forEach(( { title, text, date  } ) => {
+
+        postsHTML += `
+        
+        <section class="post">
+            <div class="post-body">
+                <h2 class="post-title">${title}</h2>
+                <p class="post-text">${text}</p>
+                
+                <div class="tags">
+                    <a href="#" class="tag">#Универ</a>
+                    <a href="#" class="tag">#Клиент</a>
+                    <a href="#" class="tag">#Актуальное</a>
+                    <a href="#" class="tag">#Мое</a>
+                    <a href="#" class="tag">#Жадность</a>
+                </div>
+            </div>
+            <div class="post-footer">
+                <div class="post-buttons">
+                    <button class="post-button likes">
+                        <svg width="19" height="20" class="icon icon-like">
+                            <use xlink:href="img/icons.svg#likes"></use>
+                        </svg>
+                        <span class="likes-counter">51</span>
+                    </button>
+                    <button class="post-button comments">
+                        <svg width="21" height="21" class="icon icon-comment">
+                            <use xlink:href="img/icons.svg#comments"></use>
+                        </svg>
+                        <span class="comments-counter">283</span>
+
+                    </button>
+                    <button class="post-button save icon-save">
+                        <svg width="19" height="19" class="icon">
+                            <use xlink:href="img/icons.svg#save"></use>
+                        </svg>
+                    </button>
+                    <button class="post-button share">
+                        <svg width="17" height="19" class="icon icon-share">
+                            <use xlink:href="img/icons.svg#share"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="post-author">
+                    <div class="author-about">
+                        <a href="" class="author-username">yana86</a>
+                        <span class="post-time">${date}</span>
+                    </div>
+                    <a href="#" class="author-link"><img src="img/avatar2.jpg" alt="ava-2" class="author-avatar"></a>
+                </div>
+            </div>
+        </section>
+        `
+    })
+
+    postsWrapper.innerHTML = postsHTML
 }
 const init = () => {
 
@@ -164,9 +244,16 @@ const init = () => {
         setUsers.editUser(editUsername.value, editPhotoURL.value, toggleAuthDom)
         editContainer.classList.remove('visible')
     })
+    menuToggle.addEventListener('click', function (event) {
+        event.preventDefault()
+        menu.classList.toggle('visible')
+    })
 
     showAllPosts()
     toggleAuthDom()
 }
 
-init()
+document.addEventListener('DOMContentLoaded', () => {
+    init()
+})
+
