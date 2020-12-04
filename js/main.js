@@ -121,7 +121,7 @@ const setUsers = {
         firebase.auth()
             .createUserWithEmailAndPassword(email, password)
             .then(data => {
-                console.log(data)
+                this.editUser(email.substring(0, email.indexOf('@')), null, handler)
             }).catch(err => {
                 const errCode = err.code
                 const errMessage = err.message
@@ -146,27 +146,32 @@ const setUsers = {
         // }
 
     },
-    editUser(userName, userPhoto, handler) {
-        if (userName){
-            this.user.displayName = userName
-        }
-        if (userPhoto){
-            this.user.photo = userPhoto
-        }
-        if (handler) {
-            handler()
-        }
+    editUser(displayName, photoURL, handler) {
 
+        const user = firebase.auth().currentUser
+
+        if (displayName){
+            if (photoURL){
+                user.updateProfile({
+                    displayName,
+                    photoURL
+                }).then(handler)
+            } else {
+                user.updateProfile({
+                    displayName
+                }).then(handler)
+            }
+        }
     },
 
-    getUser(email) {
-        return listUsers.find((item) => {
-            return item.email === email
-        })
-    },
-    authorizedUser(user) {
-        this.user = user
-    }
+    // getUser(email) {
+    //     return listUsers.find((item) => {
+    //         return item.email === email
+    //     })
+    // },
+    // authorizedUser(user) {
+    //     this.user = user
+    // }
 }
 
 const setPosts = {
@@ -218,7 +223,7 @@ const toggleAuthDom = () => {
         loginElem.style.display = 'none';
         userElem.style.display = '';
         userNameElem.textContent = user.displayName;
-        userAvatarElem.src = user.photo || userAvatarElem.src
+        userAvatarElem.src = user.photoURL || userAvatarElem.src
         buttonNewPost.classList.add('visible')
     } else {
         loginElem.style.display = '';
