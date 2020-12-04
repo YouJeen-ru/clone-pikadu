@@ -10,7 +10,7 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-console.log(firebase)
+
 
 
 let menuToggle = document.querySelector('#menu-toggle')
@@ -41,6 +41,7 @@ const postsWrapper = document.querySelector('.posts')
 const buttonNewPost = document.querySelector('.button-new-post')
 
 const addPostElem = document.querySelector('.add-post')
+const loginForget = document.querySelector('.login-forget')
 const DEFAULT_PHOTO = userAvatarElem.src
 
 
@@ -77,16 +78,6 @@ const setUsers = {
 
             })
 
-        // const user = this.getUser(email)
-        // if (user && user.password === password) {
-        //     this.authorizedUser(user)
-        //     if (handler) {
-        //         handler()
-        //     }
-        // } else {
-        //     alert('Пользователь с такими данными не найден')
-        // }
-
     },
     logOut() {
         firebase.auth().signOut()
@@ -118,17 +109,6 @@ const setUsers = {
             }
         })
 
-        // if (!this.getUser(email)) {
-        //     const user = {email, password, displayName: email.substring(0, email.indexOf('@'))}
-        //     listUsers.push(user)
-        //     this.authorizedUser(user)
-        //     if (handler) {
-        //         handler()
-        //     }
-        // } else {
-        //     alert('Пользователь с таким email уже зарегистрирован')
-        // }
-
     },
     editUser(displayName, photoURL, handler) {
 
@@ -147,16 +127,18 @@ const setUsers = {
             }
         }
     },
+    sendForget(email) {
+        firebase.auth().sendPasswordResetEmail(email)
+            .then(() => {
+                alert("Письмо отправлено")
+            })
+            .catch(err => {
 
-    // getUser(email) {
-    //     return listUsers.find((item) => {
-    //         return item.email === email
-    //     })
-    // },
-    // authorizedUser(user) {
-    //     this.user = user
-    // }
+            })
+    },
+
 }
+
 
 const setPosts = {
     allPosts: [],
@@ -209,8 +191,6 @@ const showAddPost = () => {
     addPostElem.classList.add('visible')
     postsWrapper.classList.remove('visible')
 }
-
-
 
 
 
@@ -344,6 +324,12 @@ const init = () => {
 
         addPostElem.classList.remove('visible')
         addPostElem.reset()
+    })
+
+    loginForget.addEventListener('click', event => {
+        event.preventDefault()
+        setUsers.sendForget(emailInput.value)
+        emailInput.value = ''
     })
 
     setUsers.initUser(toggleAuthDom)
