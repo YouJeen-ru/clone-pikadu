@@ -41,24 +41,8 @@ const postsWrapper = document.querySelector('.posts')
 const buttonNewPost = document.querySelector('.button-new-post')
 
 const addPostElem = document.querySelector('.add-post')
+const DEFAULT_PHOTO = userAvatarElem.src
 
-
-
-const listUsers = [
-    {
-        id: '01',
-        email: 'maks@mail.ru',
-        password: '12345',
-        displayName: 'MaksJS'
-    },
-    {
-        id: '02',
-        email: 'kate@mail.ru',
-        password: '123',
-        displayName: 'Kate'
-    },
-
-]
 
 const setUsers = {
     user: null,
@@ -175,44 +159,30 @@ const setUsers = {
 }
 
 const setPosts = {
-    allPosts: [
-        {
-            title: 'Из жизни фельдшера',
-            text: 'Дело было зимой ночью в Москве. Рассказал знакомый - студент медвуза, подрабатывал на скорой. Вызвала женщина, сильно живот болит. Приехали, заходят, женщина испугана - и тут появляется муж с бешенным взглядом и не туристическим топором в руках - жену тронете, нахер всех перебю. Из квартиры не выпускает, к телефону тоже - знает, что ментов вызовут. У знакомого нет других вариантов, как идти с захватчиком на переговоры. И ему удается ему втолковать, что жену надо везти в больницу, нужно её нести на носилках, а у подъезда чистый лёд, можно подскользнуться, она выпадет, еще что-то сломает.. И муж с топором пошел вниз отбивать лёд.',
-            tags: ['Универ', 'Интересное', 'Медицина', 'Мое', 'Фельдшер'],
-            author: {displayName: 'maks', photo: 'https://static.ekburg.tv/2019-09-15/1306fa80-d7f3-11e9-aa41-1be24cec0e2d/1304b090-d7f3-11e9-aa41-1be24cec0e2d.jpg'},
-            date: '11.11.2020, 20:54:00',
-            like: 15,
-            comments: 20,
-        },
-        {
-            title: 'Заголовок поста',
-            text: '1. В универе надо было самим искать себе практику по переводческой работе и писать отчёт по ней. Моя одногруппница и подруга Маша отработала в крутой компании и общалась с поставщиками со всего мира.После проверки ее работы, молодая преподаватель «усомнилась» в истинности этой работы и запросила контакты руководителя',
-            tags: ['Универ', 'Интересное', 'Мое', 'Фельдшер'],
-            author: {displayName: 'kate', photo:'https://klike.net/uploads/posts/2019-06/1561009159_3.jpg'},
-            date: '10.11.2020, 20:54:00',
-            like: 45,
-            comments: 12,
-        },
-
-    ],
+    allPosts: [],
     addPost(title, text, tags, handler) {
         this.allPosts.unshift({
+            id: `postIdD${(+new Date()).toString(16)}`,
             title,
             text,
             tags: tags.split(',').map(item => item.trim()),
             author: {
                 displayName: setUsers.user.displayName,
-                photo: setUsers.user.photo
+                photo: setUsers.user.photoURL
             },
             date: new Date().toLocaleString(),
             like: 0,
             comments: 0,
         })
-        if (handler) {
-            handler()
-        }
 
+        firebase.database().ref('post').set(this.allPosts)
+            .then(() => this.getPosts(handler))
+    },
+    getPosts(handler) {
+        firebase.database().ref('post').on('value', snapshot => {
+            this.allPosts = snapshot.val() || [];
+            handler()
+        })
     }
 
 }
@@ -223,7 +193,7 @@ const toggleAuthDom = () => {
         loginElem.style.display = 'none';
         userElem.style.display = '';
         userNameElem.textContent = user.displayName;
-        userAvatarElem.src = user.photoURL || userAvatarElem.src
+        userAvatarElem.src = user.photoURL || DEFAULT_PHOTO
         buttonNewPost.classList.add('visible')
     } else {
         loginElem.style.display = '';
@@ -377,7 +347,7 @@ const init = () => {
     })
 
     setUsers.initUser(toggleAuthDom)
-    showAllPosts()
+    setPosts.getPosts(showAllPosts)
 
 }
 
