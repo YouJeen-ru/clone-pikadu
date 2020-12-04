@@ -78,22 +78,35 @@ const setUsers = {
             alert('email не валиден')
             return
         }
-        const user = this.getUser(email)
-        if (user && user.password === password) {
-            this.authorizedUser(user)
-            if (handler) {
-                handler()
-            }
-        } else {
-            alert('Пользователь с такими данными не найден')
-        }
+
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .catch(err => {
+                const errCode = err.code
+                const errMessage = err.message
+                if (errCode === 'auth/wrong-password') {
+                    alert("Неверный пароль")
+                } else if (errCode === 'auth/user-not-found') {
+                    alert("Пользователь не найден")
+                } else {
+                    alert(errMessage)
+                }
+
+            })
+
+        // const user = this.getUser(email)
+        // if (user && user.password === password) {
+        //     this.authorizedUser(user)
+        //     if (handler) {
+        //         handler()
+        //     }
+        // } else {
+        //     alert('Пользователь с такими данными не найден')
+        // }
 
     },
-    logOut(handler) {
+    logOut() {
         firebase.auth().signOut()
-        // if (handler) {
-        //     handler()
-        // }
+
     },
     signUp(email, password, handler) {
         if (!regExpValidEmail.test(email)) {
