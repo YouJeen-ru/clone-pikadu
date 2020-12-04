@@ -1,3 +1,18 @@
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyBVAUHYm-q-jQlP970Rlz-MEXUYid5wovY",
+    authDomain: "pikadu-a938c.firebaseapp.com",
+    projectId: "pikadu-a938c",
+    storageBucket: "pikadu-a938c.appspot.com",
+    messagingSenderId: "538249125385",
+    appId: "1:538249125385:web:66f1d910e7dd5190b5a2d8"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+console.log(firebase)
+
+
 let menuToggle = document.querySelector('#menu-toggle')
 let menu = document.querySelector('.sidebar')
 
@@ -47,6 +62,17 @@ const listUsers = [
 
 const setUsers = {
     user: null,
+    initUser(handler) {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.user = user
+            } else  {
+                this.user = null
+            }
+            if (handler) handler()
+        })
+    },
+
     logIn(email, password, handler) {
         if (!regExpValidEmail.test(email)) {
             alert('email не валиден')
@@ -64,10 +90,10 @@ const setUsers = {
 
     },
     logOut(handler) {
-        this.user = null
-        if (handler) {
-            handler()
-        }
+        firebase.auth().signOut()
+        // if (handler) {
+        //     handler()
+        // }
     },
     signUp(email, password, handler) {
         if (!regExpValidEmail.test(email)) {
@@ -78,16 +104,33 @@ const setUsers = {
             alert("Введите данные")
             return
         }
-        if (!this.getUser(email)) {
-            const user = {email, password, displayName: email.substring(0, email.indexOf('@'))}
-            listUsers.push(user)
-            this.authorizedUser(user)
-            if (handler) {
-                handler()
+
+        firebase.auth()
+            .createUserWithEmailAndPassword(email, password)
+            .then(data => {
+                console.log(data)
+            }).catch(err => {
+                const errCode = err.code
+                const errMessage = err.message
+            if (errCode === 'auth/weak-password') {
+                alert("Слабый пароль")
+            } else if (errCode === 'auth/email-already-in-use') {
+                alert("Этот email уже используется")
+            } else {
+                alert(errMessage)
             }
-        } else {
-            alert('Пользователь с таким email уже зарегистрирован')
-        }
+        })
+
+        // if (!this.getUser(email)) {
+        //     const user = {email, password, displayName: email.substring(0, email.indexOf('@'))}
+        //     listUsers.push(user)
+        //     this.authorizedUser(user)
+        //     if (handler) {
+        //         handler()
+        //     }
+        // } else {
+        //     alert('Пользователь с таким email уже зарегистрирован')
+        // }
 
     },
     editUser(userName, userPhoto, handler) {
@@ -315,8 +358,9 @@ const init = () => {
         addPostElem.reset()
     })
 
+    setUsers.initUser(toggleAuthDom)
     showAllPosts()
-    toggleAuthDom()
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
