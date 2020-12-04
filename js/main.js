@@ -243,7 +243,7 @@ const showAllPosts = () => {
                         <a href="" class="author-username">${author.displayName}</a>
                         <span class="post-time">${date}</span>
                     </div>
-                    <a href="#" class="author-link"><img src=${author.photo || "img/avatar2.jpg"} alt="ava-2" class="author-avatar"></a>
+                    <a href="#" class="author-link"><img src=${author.photo || "img/avatar.jpg"} alt="avatar" class="author-avatar"></a>
                 </div>
             </div>
         </section>
